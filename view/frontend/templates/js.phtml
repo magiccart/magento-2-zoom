@@ -1,0 +1,41 @@
+<?php
+$jsonHelper = $this->helper('Magento\Framework\Json\Helper\Data');
+$helper     = $this->helper('Magiccart\Zoom\Helper\Data');
+$data       = $helper->getConfigModule('general');
+foreach ($data as $key => $value) {
+    if(is_numeric($value)){
+        $data[$key] = (float) $value;
+        continue;
+    }
+    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    if(!is_null($value)){
+        $data[$key] = $value; 
+    }
+}
+?>
+<script type="text/javascript">
+    require([
+        'jquery',
+        'magiccart/zoom',
+        ], function($){
+            "use strict";
+
+            if( $(window).width() < 768 ) return;
+            var options = <?php echo is_array($data) ? $jsonHelper->jsonEncode($data) : '{}' ?>;
+            $('head').append('<style type="text/css">.fotorama--fullscreen .zoomImg {display: none !important;}</style>');
+            $(document).on('fotorama:load fotorama:showend fotorama:fullscreenenter fotorama:fullscreenexit', function (event, fotorama, extra) {
+                if(event.type == 'fotorama:fullscreenenter') return;
+                if( fotorama.activeFrame.type != 'image' || $('body').hasClass('fotorama__fullscreen') ) return;
+                var element = $('.product.media .fotorama__stage .fotorama__active');
+                if(!element.length) return;
+                var img     = element.find('img');
+                if(!img.length || img.hasClass('zoomImg')) return;
+                var defaults = {
+                    url: fotorama.activeFrame.full
+                };
+                var settings = $.extend(defaults, options);
+                element.zoom(settings);                
+            });
+
+    });
+</script>
