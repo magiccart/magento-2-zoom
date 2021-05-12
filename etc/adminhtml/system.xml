@@ -15,7 +15,7 @@
             <class>separator-top</class>
             <label>Zoom</label>
             <tab>magiccart</tab>
-            <resource>Magiccart_Zoom::config_zoom</resource>
+            <resource>Magiccart_Zoom::config</resource>
             <group id="general" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
 
